@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord — PInvoices{% endblock %}
+
+{% block content %}
+<h1>Tableau de bord</h1>
+<p class="lead">Synthèse et raccourcis.</p>
+
+<div class="dash-grid">
+    <a class="dash-card reveal" href="{% url 'catalog:produit_liste' %}">
+        <span class="dash-card__label">Produits (total)</span>
+        <span class="dash-card__value">{{ nb_produits }}</span>
+        <span class="dash-card__hint">Tous les articles enregistrés</span>
+    </a>
+    <a class="dash-card reveal" href="{% url 'catalog:catalogue' %}">
+        <span class="dash-card__label">Catalogue (offre visible)</span>
+        <span class="dash-card__value">{{ nb_produits_catalogue }}</span>
+        <span class="dash-card__hint">Actifs + affichés au catalogue</span>
+    </a>
+    <a class="dash-card reveal" href="{% url 'catalog:facture_liste' %}">
+        <span class="dash-card__label">Factures</span>
+        <span class="dash-card__value">{{ nb_factures }}</span>
+        <span class="dash-card__hint">Statuts &amp; totaux</span>
+    </a>
+</div>
+
+<ul class="actions" style="margin-top:1.25rem">
+    <li><a class="btn" href="{% url 'catalog:catalogue' %}">Ouvrir le catalogue</a></li>
+    <li><a class="btn btn-secondary" href="{% url 'catalog:produit_liste' %}">Tous les produits</a></li>
+    <li><a class="btn" href="{% url 'catalog:facture_liste' %}">Voir les factures</a></li>
+    <li><a class="btn btn-secondary" href="{% url 'catalog:facture_creer' %}">Nouvelle facture</a></li>
+</ul>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Factures{% endblock %}
+
+{% block content %}
+<h1>Factures</h1>
+
+<form class="filters" method="get" action="">
+    <label class="filters__field">
+        <span class="filters__label">Recherche</span>
+        <input type="search" name="q" value="{{ q }}" placeholder="N°, référence, client, e-mail…" autocomplete="off">
+    </label>
+    <label class="filters__field">
+        <span class="filters__label">Statut</span>
+        <select name="statut">
+            <option value="">Tous</option>
+            {% for val, label in statut_choices %}
+            <option value="{{ val }}" {% if statut == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <button type="submit" class="btn">Filtrer</button>
+    {% if q or statut %}
+    <a class="btn btn-secondary" href="{% url 'catalog:facture_liste' %}">Réinitialiser</a>
+    {% endif %}
+</form>
+
+<p><a class="btn" href="{% url 'catalog:facture_creer' %}">Nouvelle facture</a></p>
+
+<div class="table-scroll" role="region" aria-label="Liste des factures">
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>N°</th>
+            <th>Référence</th>
+            <th>Client</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for f in factures %}
+        <tr>
+            <td>{{ f.pk }}</td>
+            <td>{% if f.reference %}{{ f.reference }}{% else %}—{% endif %}</td>
+            <td>{% if f.client_nom %}{{ f.client_nom }}{% else %}—{% endif %}</td>
+            <td><span class="badge">{{ f.get_statut_display }}</span></td>
+            <td>{{ f.date_creation|date:"d/m/Y H:i" }}</td>
+            <td class="cell-actions"><a href="{% url 'catalog:facture_detail' f.pk %}">Détail</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">Aucune facture.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% if factures.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Pagination factures">
+    {% if factures.has_previous %}
+        <a href="?page={{ factures.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if statut %}&statut={{ statut|urlencode }}{% endif %}">Précédent</a>
+    {% endif %}
+    <span>Page {{ factures.number }} / {{ factures.paginator.num_pages }}</span>
+    {% if factures.has_next %}
+        <a href="?page={{ factures.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if statut %}&statut={{ statut|urlencode }}{% endif %}">Suivant</a>
+    {% endif %}
+</nav>
+{% endif %}
+{% endblock %}

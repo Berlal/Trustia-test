@@ -1,0 +1,234 @@
+{% load catalog_extras %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Facture {{ facture.reference|default:facture.pk }}</title>
+    <style>
+        @page { size: A4; margin: 12mm; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 9.5pt;
+            line-height: 1.35;
+            color: #202124;
+            margin: 0;
+        }
+        .sheet {
+            max-width: 100%;
+        }
+        .masthead {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12pt;
+            padding: 12pt 14pt;
+            background: {{ couleur_accent }};
+            color: #fff;
+            border-radius: 6pt;
+            margin-bottom: 12pt;
+        }
+        .brand { flex: 1; }
+        .logo { font-size: 16pt; font-weight: 800; letter-spacing: -0.03em; margin: 0; }
+        .tag { font-size: 7pt; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.95; margin: 3pt 0 0; }
+        .right { text-align: right; min-width: 120pt; }
+        .kind { font-size: 7pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.95; margin: 0 0 4pt; }
+        .ref { font-size: 10pt; margin: 0 0 3pt; }
+        .date { font-size: 8.5pt; margin: 0; opacity: 0.95; }
+        .pill {
+            display: inline-block;
+            margin-top: 6pt;
+            padding: 2pt 7pt;
+            border-radius: 999pt;
+            font-size: 7.5pt;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+        .grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 10pt;
+        }
+        .col {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding-right: 10pt;
+        }
+        .col:last-child { padding-right: 0; padding-left: 10pt; }
+        .h3 {
+            font-size: 7pt;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: #5f6368;
+            margin: 0 0 4pt;
+        }
+        .party { margin: 0; font-size: 9pt; }
+        .placeholder { color: #80868b; font-style: italic; }
+        .devise { font-size: 8.5pt; color: #5f6368; margin: 0 0 8pt; }
+        table.lines {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8pt;
+            margin-bottom: 10pt;
+        }
+        .lines thead { background: #f1f3f4; }
+        .lines th {
+            text-align: left;
+            padding: 6pt 5pt;
+            border-bottom: 2pt solid #dadce0;
+            font-weight: 700;
+            color: #3c4043;
+        }
+        .lines th.num, .lines td.num { text-align: right; white-space: nowrap; }
+        .lines td {
+            padding: 5pt;
+            border-bottom: 1pt solid #eceff1;
+            vertical-align: top;
+        }
+        .lines tbody tr:nth-child(even) { background: #fafafa; }
+        .totals {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10pt;
+        }
+        .totals-inner {
+            min-width: 160pt;
+            padding: 8pt 10pt;
+            border: 1pt solid #e8eaed;
+            border-radius: 5pt;
+            background: #f8f9fa;
+        }
+        .totals dl { margin: 0; }
+        .totals .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16pt;
+            font-size: 9pt;
+            padding: 2pt 0;
+        }
+        .totals dt { margin: 0; color: #5f6368; font-weight: 500; }
+        .totals dd { margin: 0; font-weight: 600; }
+        .totals .ttc {
+            margin-top: 5pt;
+            padding-top: 6pt;
+            border-top: 2pt solid {{ couleur_accent }};
+            font-size: 11pt;
+        }
+        .totals .ttc dt { font-weight: 700; color: #202124; }
+        .totals .ttc dd { font-weight: 800; color: {{ couleur_accent }}; }
+        .notes {
+            padding: 8pt 9pt;
+            border-radius: 5pt;
+            background: #fff8e1;
+            border: 1pt solid #fdd663;
+            font-size: 8pt;
+        }
+        .notes h4 {
+            margin: 0 0 4pt;
+            font-size: 7pt;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #8a6d3b;
+        }
+        .notes p { margin: 0; color: #3c4043; }
+        .foot {
+            margin-top: 12pt;
+            font-size: 7pt;
+            color: #80868b;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="sheet">
+    <header class="masthead">
+        <div class="brand">
+            <p class="logo">PInvoices</p>
+            <p class="tag">Piwebi × Trustia</p>
+        </div>
+        <div class="right">
+            <p class="kind">Facture</p>
+            <p class="ref"><strong>Réf.</strong> {% if facture.reference %}{{ facture.reference }}{% else %}—{% endif %}</p>
+            <p class="date">Date : {{ facture.date_creation|date:"d/m/Y" }}</p>
+            <p class="pill">{{ facture.get_statut_display }}</p>
+        </div>
+    </header>
+
+    <div class="grid">
+        <div class="col">
+            <h3 class="h3">Émetteur</h3>
+            <p class="party"><strong>PInvoices</strong><br />Démonstration produit<br />France</p>
+        </div>
+        <div class="col">
+            <h3 class="h3">Facturer à</h3>
+            {% if facture.client_nom or facture.client_email or facture.client_telephone or facture.adresse_facturation %}
+            <p class="party">
+                {% if facture.client_nom %}<strong>{{ facture.client_nom }}</strong>{% else %}<span class="placeholder">—</span>{% endif %}
+                {% if facture.client_email %}<br />{{ facture.client_email }}{% endif %}
+                {% if facture.client_telephone %}<br />{{ facture.client_telephone }}{% endif %}
+                {% if facture.adresse_facturation %}<br />{{ facture.adresse_facturation|linebreaksbr }}{% endif %}
+            </p>
+            {% else %}
+            <p class="party placeholder">Coordonnées client</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <p class="devise">Devise : <strong>{{ facture.devise }}</strong></p>
+
+    <table class="lines">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th class="num">PU HT</th>
+                <th class="num">Qté</th>
+                <th class="num">Rem.</th>
+                <th class="num">TVA</th>
+                <th class="num">HT</th>
+                <th class="num">TTC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in lignes %}
+            <tr>
+                <td>{{ ligne.libelle_facture }}</td>
+                <td class="num">{{ ligne.produit.prix|eur_fr }}</td>
+                <td class="num">{{ ligne.quantite }}</td>
+                <td class="num">{% if ligne.remise_pourcent %}{{ ligne.remise_pourcent|stringformat:"s" }}&nbsp;%{% else %}—{% endif %}</td>
+                <td class="num">{{ ligne.produit.taux_tva|stringformat:"s" }}&nbsp;%</td>
+                <td class="num">{{ ligne.montant_ht|eur_fr }}</td>
+                <td class="num"><strong>{{ ligne.montant_ttc|eur_fr }}</strong></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">Aucune ligne.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if lignes %}
+    <div class="totals">
+        <div class="totals-inner">
+            <dl>
+                <div class="row"><dt>Total HT</dt><dd>{{ total_ht|eur_fr }}</dd></div>
+                <div class="row"><dt>Total TVA</dt><dd>{{ total_tva|eur_fr }}</dd></div>
+                <div class="row ttc"><dt>Total TTC</dt><dd>{{ total_ttc|eur_fr }}</dd></div>
+            </dl>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if facture.notes_internes %}
+    <div class="notes">
+        <h4>Notes</h4>
+        <p>{{ facture.notes_internes|linebreaksbr }}</p>
+    </div>
+    {% endif %}
+
+    <p class="foot">Document généré par PInvoices — prévisualisation / export PDF.</p>
+</div>
+</body>
+</html>

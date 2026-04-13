@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}{% if vue_catalogue %}Catalogue produits{% else %}Produits{% endif %}{% endblock %}
+
+{% block content %}
+{% if vue_catalogue %}
+<h1>Catalogue produits</h1>
+<p class="lead">Actifs + au catalogue (lignes facture). Filtres ci-dessous.</p>
+{% else %}
+<h1>Produits</h1>
+<p class="lead">Tous les articles — <a href="{% url 'catalog:catalogue' %}">Catalogue</a>.</p>
+{% endif %}
+
+<form class="filters" method="get" action="{% if vue_catalogue %}{% url 'catalog:catalogue' %}{% else %}{% url 'catalog:produit_liste' %}{% endif %}">
+    <label class="filters__field">
+        <span class="filters__label">Recherche</span>
+        <input type="search" name="q" value="{{ q }}" placeholder="Nom, référence, description…" autocomplete="off">
+    </label>
+    <label class="filters__field">
+        <span class="filters__label">Catégorie</span>
+        <input type="text" name="categorie" value="{{ categorie }}" placeholder="Exact ou vide" list="categories-list">
+        <datalist id="categories-list">
+            {% for c in categories %}
+            <option value="{{ c }}">
+            {% endfor %}
+        </datalist>
+    </label>
+    <label class="filters__field">
+        <span class="filters__label">Actif</span>
+        <select name="actif">
+            <option value="" {% if actif != '1' and actif != '0' %}selected{% endif %}>Tous</option>
+            <option value="1" {% if actif == '1' %}selected{% endif %}>Oui</option>
+            <option value="0" {% if actif == '0' %}selected{% endif %}>Non</option>
+        </select>
+    </label>
+    <label class="filters__field">
+        <span class="filters__label">Catalogue</span>
+        <select name="catalogue">
+            <option value="" {% if catalogue != '1' and catalogue != '0' %}selected{% endif %}>Tous</option>
+            <option value="1" {% if catalogue == '1' %}selected{% endif %}>Affichés (liste + factures)</option>
+            <option value="0" {% if catalogue == '0' %}selected{% endif %}>Masqués</option>
+        </select>
+    </label>
+    <button type="submit" class="btn">Filtrer</button>
+    {% if q or categorie or actif == '0' or actif == '1' or catalogue == '0' or catalogue == '1' %}
+    <a class="btn btn-secondary" href="{% if vue_catalogue %}{% url 'catalog:catalogue' %}{% else %}{% url 'catalog:produit_liste' %}{% endif %}">Réinitialiser</a>
+    {% endif %}
+</form>
+
+<p>
+    <a class="btn" href="{% url 'catalog:produit_creer' %}">Nouveau produit</a>
+    {% if vue_catalogue %}
+    <a class="btn btn-secondary" href="{% url 'catalog:produit_liste' %}">Liste complète (tous les produits)</a>
+    {% endif %}
+</p>
+
+<div class="table-scroll" role="region" aria-label="Liste des produits">
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Référence</th>
+            <th>Catégorie</th>
+            <th>Prix HT</th>
+            <th>TVA</th>
+            <th>Péremption</th>
+            <th>Actif</th>
+            <th>Catalogue</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in produits %}
+        <tr>
+            <td>{{ p.nom }}</td>
+            <td>{% if p.reference_interne %}{{ p.reference_interne }}{% else %}—{% endif %}</td>
+            <td>{% if p.categorie %}{{ p.categorie }}{% else %}—{% endif %}</td>
+            <td>{{ p.prix }} €</td>
+            <td>{{ p.taux_tva }}&nbsp;%</td>
+            <td>{{ p.date_peremption|date:"d/m/Y" }}</td>
+            <td>{% if p.actif %}<span class="badge badge--ok">Oui</span>{% else %}<span class="badge badge--muted">Non</span>{% endif %}</td>
+            <td>{% if p.au_catalogue %}<span class="badge badge--ok">Oui</span>{% else %}<span class="badge badge--muted">Non</span>{% endif %}</td>
+            <td class="cell-actions">
+                <a href="{% url 'catalog:produit_modifier' p.pk %}">Modifier</a>
+                <a href="{% url 'catalog:produit_supprimer' p.pk %}">Supprimer</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9">Aucun produit.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% if produits.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Pagination produits">
+    {% if produits.has_previous %}
+        <a href="?page={{ produits.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if categorie %}&categorie={{ categorie|urlencode }}{% endif %}{% if actif %}&actif={{ actif|urlencode }}{% endif %}{% if catalogue %}&catalogue={{ catalogue|urlencode }}{% endif %}">Précédent</a>
+    {% endif %}
+    <span>Page {{ produits.number }} / {{ produits.paginator.num_pages }}</span>
+    {% if produits.has_next %}
+        <a href="?page={{ produits.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if categorie %}&categorie={{ categorie|urlencode }}{% endif %}{% if actif %}&actif={{ actif|urlencode }}{% endif %}{% if catalogue %}&catalogue={{ catalogue|urlencode }}{% endif %}">Suivant</a>
+    {% endif %}
+</nav>
+{% endif %}
+{% endblock %}

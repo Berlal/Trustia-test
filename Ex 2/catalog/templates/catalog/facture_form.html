@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Nouvelle facture{% endblock %}
+
+{% block content %}
+<h1>Nouvelle facture</h1>
+
+{{ produits_preview|json_script:"produits-preview-data" }}
+{{ statut_labels|json_script:"statut-labels-data" }}
+
+<div class="facture-create-layout">
+    <div class="facture-create-main">
+        <form method="post" class="stack-form facture-create" id="facture-create-form">
+            {% csrf_token %}
+            {{ facture_form.non_field_errors }}
+            {% for field in facture_form %}
+            {% if field.name != "couleur_theme" %}
+            <div class="field" data-preview-field="{{ field.name }}">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {{ facture_form.couleur_theme }}
+
+            <h2>Lignes</h2>
+            {{ ligne_formset.management_form }}
+            {% if ligne_formset.non_form_errors %}
+            <div class="errorlist">{{ ligne_formset.non_form_errors }}</div>
+            {% endif %}
+            <div class="table-scroll" role="region" aria-label="Lignes de facture">
+            <table class="data-table formset-table" id="facture-lignes-table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Remise %</th>
+                        <th>Libellé facture</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in ligne_formset %}
+                    <tr class="ligne-row" data-form-index="{{ forloop.counter0 }}">
+                        <td>
+                            {{ form.id }}
+                            {{ form.produit }}
+                            {{ form.produit.errors }}
+                        </td>
+                        <td>
+                            {{ form.quantite }}
+                            {{ form.quantite.errors }}
+                        </td>
+                        <td>
+                            {{ form.remise_pourcent }}
+                            {{ form.remise_pourcent.errors }}
+                        </td>
+                        <td>
+                            {{ form.libelle_override }}
+                            {{ form.libelle_override.errors }}
+                            {{ form.non_field_errors }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+
+            <p class="form-actions">
+                <button type="submit" class="btn">Créer la facture</button>
+                <a href="{% url 'catalog:facture_liste' %}">Annuler</a>
+            </p>
+        </form>
+    </div>
+
+    <aside class="facture-preview" aria-live="polite" aria-label="Aperçu facture">
+        <div class="facture-preview__inner">
+            <p class="facture-preview__eyebrow">Aperçu en direct</p>
+            <div class="inv-preview-toolbar">
+                <span class="inv-preview-toolbar__label">Style</span>
+                <label class="inv-preview-color-wrap" title="Couleur du bandeau et des accents">
+                    <span class="visually-hidden">Couleur du thème</span>
+                    <input type="color" id="inv-preview-accent" class="inv-preview-color" value="#1a73e8" />
+                </label>
+                <div class="inv-preview-presets" role="group" aria-label="Thèmes prédéfinis">
+                    <button type="button" class="inv-preview-preset" data-color="#1a73e8" style="--sw:#1a73e8" title="Bleu"></button>
+                    <button type="button" class="inv-preview-preset" data-color="#0d9488" style="--sw:#0d9488" title="Émeraude"></button>
+                    <button type="button" class="inv-preview-preset" data-color="#7c3aed" style="--sw:#7c3aed" title="Violet"></button>
+                    <button type="button" class="inv-preview-preset" data-color="#c2410c" style="--sw:#c2410c" title="Brique"></button>
+                    <button type="button" class="inv-preview-preset" data-color="#334155" style="--sw:#334155" title="Ardoise"></button>
+                </div>
+            </div>
+            <div id="inv-preview-root" class="inv-preview-root"></div>
+            <p class="facture-preview__disclaimer">Prévisualisation indicative avant enregistrement — le document définitif est celui enregistré après validation.</p>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/facture_preview.js' %}" defer></script>
+{% endblock %}

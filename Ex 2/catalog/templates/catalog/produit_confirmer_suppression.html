@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Supprimer le produit" %}{% endblock %}
+
+{% block content %}
+<h1>{% trans "Supprimer le produit" %}</h1>
+
+{% if not peut_supprimer %}
+<p class="lead">{% blocktrans with nom=produit.nom %}Le produit <strong>{{ nom }}</strong> ne peut pas être supprimé : il est encore utilisé sur au moins une facture (l’historique doit rester cohérent).{% endblocktrans %}</p>
+<p>{% trans "Factures concernées :" %}</p>
+<ul>
+    {% for f in factures_liees %}
+    <li><a href="{% url 'catalog:facture_detail' f.pk %}">{% trans "Facture" %} #{{ f.pk }}{% if f.reference %} — {{ f.reference }}{% endif %}</a></li>
+    {% endfor %}
+</ul>
+<p class="mk-p mk-p--small" style="margin-top:1rem">{% trans "Vous pouvez retirer ce produit des lignes de ces factures, ou simplement désactiver le produit dans le catalogue pour ne plus le proposer à la vente." %}</p>
+<p class="form-actions"><a class="btn btn-secondary" href="{% url 'catalog:produit_liste' %}">{% trans "Retour à la liste" %}</a></p>
+{% else %}
+<p>{% blocktrans with nom=produit.nom %}Confirmer la suppression de <strong>{{ nom }}</strong> ?{% endblocktrans %}</p>
+<form method="post">
+    {% csrf_token %}
+    <p class="form-actions">
+        <button type="submit" class="btn btn-danger">{% trans "Supprimer définitivement" %}</button>
+        <a href="{% url 'catalog:produit_liste' %}">{% trans "Annuler" %}</a>
+    </p>
+</form>
+{% endif %}
+{% endblock %}

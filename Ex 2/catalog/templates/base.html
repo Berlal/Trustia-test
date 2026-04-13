@@ -1,0 +1,101 @@
+{% load static i18n %}
+{% get_current_language as HTML_LANG %}
+<!DOCTYPE html>
+<html lang="{{ HTML_LANG }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% trans "PInvoices" %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'catalog/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="layout-app">
+<div class="promo-bar" role="note">
+    <span class="promo-bar__text">Je fais ma petite auto-promo&nbsp;;)</span>
+    <a class="promo-bar__brand" href="https://piwebi.fr" target="_blank" rel="noopener noreferrer" title="Piwebi — création de sites web">
+        <img class="promo-bar__logo" src="{% static 'logo.png' %}" width="120" height="32" alt="Piwebi">
+    </a>
+    <span class="promo-bar__text">si vous avez besoin d’un site web&nbsp;;)</span>
+</div>
+
+<div class="app-shell">
+    {% with url_name=request.resolver_match.url_name %}
+    <aside class="app-sidebar" id="app-sidebar" aria-label="{% trans 'Applications' %}">
+        <div class="app-sidebar__head">
+            <a class="app-sidebar__brand" href="{% url 'catalog:accueil' %}" title="PInvoices">
+                <span class="app-sidebar__brand-mark">P</span>
+                <span class="app-sidebar__brand-text">PInvoices</span>
+            </a>
+        </div>
+        <nav class="app-sidebar__nav">
+            <a class="app-sidebar__link{% if url_name == 'accueil' %} app-sidebar__link--active{% endif %}" href="{% url 'catalog:accueil' %}"{% if url_name == 'accueil' %} aria-current="page"{% endif %}>
+                <span class="app-sidebar__ico" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+                </span>
+                <span class="app-sidebar__label">{% trans "Tableau de bord" %}</span>
+            </a>
+            <a class="app-sidebar__link{% if url_name == 'catalogue' %} app-sidebar__link--active{% endif %}" href="{% url 'catalog:catalogue' %}"{% if url_name == 'catalogue' %} aria-current="page"{% endif %}>
+                <span class="app-sidebar__ico" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h8"/></svg>
+                </span>
+                <span class="app-sidebar__label">{% trans "Catalogue" %}</span>
+            </a>
+            <a class="app-sidebar__link{% if url_name == 'produit_liste' or url_name == 'produit_creer' or url_name == 'produit_modifier' or url_name == 'produit_supprimer' %} app-sidebar__link--active{% endif %}" href="{% url 'catalog:produit_liste' %}"{% if url_name == 'produit_liste' or url_name == 'produit_creer' or url_name == 'produit_modifier' or url_name == 'produit_supprimer' %} aria-current="page"{% endif %}>
+                <span class="app-sidebar__ico" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg>
+                </span>
+                <span class="app-sidebar__label">{% trans "Produits" %}</span>
+            </a>
+            <a class="app-sidebar__link{% if url_name == 'facture_liste' or url_name == 'facture_creer' or url_name == 'facture_detail' %} app-sidebar__link--active{% endif %}" href="{% url 'catalog:facture_liste' %}"{% if url_name == 'facture_liste' or url_name == 'facture_creer' or url_name == 'facture_detail' %} aria-current="page"{% endif %}>
+                <span class="app-sidebar__ico" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                </span>
+                <span class="app-sidebar__label">{% trans "Factures" %}</span>
+            </a>
+        </nav>
+        <div class="app-sidebar__foot">
+            <button type="button" class="app-sidebar__collapse" id="app-sidebar-collapse" aria-pressed="false" title="{% trans 'Réduire le menu' %}">
+                <span class="app-sidebar__collapse-icon" aria-hidden="true">
+                    <svg class="app-sidebar__chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </span>
+                <span class="app-sidebar__collapse-text">{% trans "Réduire" %}</span>
+            </button>
+        </div>
+    </aside>
+    {% endwith %}
+
+    <button type="button" class="app-sidebar-backdrop" id="app-sidebar-backdrop" aria-label="{% trans 'Fermer le menu' %}" tabindex="-1"></button>
+
+    <div class="app-main">
+        <header class="app-topbar">
+            <div class="app-topbar__left">
+                <button type="button" class="app-menu-toggle" id="app-menu-toggle" aria-expanded="false" aria-controls="app-sidebar" title="{% trans 'Menu' %}">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                </button>
+            </div>
+            <div class="app-topbar__right">
+                {% include "includes/lang_switch.html" %}
+            </div>
+        </header>
+
+        {% if messages %}
+        <ul class="flash-list app-flash" role="status">
+            {% for message in messages %}
+            <li class="flash flash--{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <main class="container app-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+{% block extra_js %}{% endblock %}
+<script src="{% static 'catalog/app.js' %}" defer></script>
+</body>
+</html>

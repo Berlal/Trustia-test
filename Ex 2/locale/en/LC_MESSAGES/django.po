@@ -1,0 +1,132 @@
+# English translations for PInvoices (project locale).
+#
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Insights IA — PInvoices"
+msgstr "AI insights — PInvoices"
+
+msgid "Insights performance"
+msgstr "Performance insights"
+
+msgid ""
+"Indicateurs calculés sur vos factures enregistrées. La <strong>synthèse IA</strong> n’est produite qu’après action sur cette page (bouton ci-dessous), lorsque l’API Fireworks est configurée. Ce n’est pas un conseil fiscal ni une certification."
+msgstr ""
+"Indicators computed from your recorded invoices. The <strong>AI summary</strong> is only produced after you use this page (button below), when the Fireworks API is configured. This is not tax advice or a certification."
+
+msgid "Synthèse IA"
+msgstr "AI summary"
+
+msgid "Synthèse IA (Fireworks)"
+msgstr "AI summary (Fireworks)"
+
+msgid "Langue de la synthèse générée :"
+msgstr "Generated summary language:"
+
+msgid "Langue de la synthèse"
+msgstr "Summary language"
+
+msgid "Français"
+msgstr "French"
+
+msgid "English"
+msgstr "English"
+
+msgid "Générer la synthèse IA"
+msgstr "Generate AI summary"
+
+msgid "Synthèse (English)"
+msgstr "Summary (English)"
+
+msgid "Synthèse (français)"
+msgstr "Summary (French)"
+
+msgid "Factures"
+msgstr "Invoices"
+
+msgid "Volume TTC (cumulé)"
+msgstr "Gross total (cumulative)"
+
+msgid "Encaissé (statut payée)"
+msgstr "Collected (paid)"
+
+msgid "CA TTC (30 jours)"
+msgstr "Revenue incl. VAT (30 days)"
+
+msgid "Panier moyen TTC"
+msgstr "Average basket incl. VAT"
+
+msgid "Répartition par statut"
+msgstr "Breakdown by status"
+
+msgid "Astuce : les libellés suivent votre workflow (brouillon → envoyée → payée)."
+msgstr "Tip: labels follow your workflow (draft → sent → paid)."
+
+msgid "Aucune recommandation pour le moment."
+msgstr "No recommendations for now."
+
+msgid ""
+"Les clés API restent côté serveur (jamais exposées au navigateur). Pour la production : quotas, journalisation et politique de rétention des prompts."
+msgstr ""
+"API keys stay on the server (never exposed to the browser). For production: quotas, logging, and prompt retention policy."
+
+msgid "PInvoices"
+msgstr "PInvoices"
+
+msgid "Applications"
+msgstr "Applications"
+
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+msgid "Produits"
+msgstr "Products"
+
+msgid "Site public"
+msgstr "Public site"
+
+msgid "Compte connecté"
+msgstr "Signed in"
+
+msgid "Déconnexion"
+msgstr "Sign out"
+
+msgid "Langue du site"
+msgstr "Site language"
+
+msgid "PInvoices — Facturation & conformité"
+msgstr "PInvoices — Invoicing & compliance"
+
+msgid "Pourquoi PInvoices"
+msgstr "Why PInvoices"
+
+msgid "Réforme 2026"
+msgstr "2026 reform"
+
+msgid "Note candidat"
+msgstr "Candidate note"
+
+msgid "Ouvrir l’app"
+msgstr "Open app"
+
+msgid "Connexion"
+msgstr "Sign in"
+
+msgid "Créer un compte"
+msgstr "Create account"
+
+msgid "Compte — PInvoices"
+msgstr "Account — PInvoices"
+
+msgid "Retour au site"
+msgstr "Back to site"
+
+msgid "La synthèse IA est désactivée : renseignez FIREWORKS_API_KEY dans l’environnement."
+msgstr "AI summary is disabled: set FIREWORKS_API_KEY in the environment."
+
+msgid ""
+"Configurez FIREWORKS_API_KEY (et optionnellement FIREWORKS_MODEL) dans l’environnement "
+"pour activer la synthèse IA via Fireworks."
+msgstr ""
+"Set FIREWORKS_API_KEY (and optionally FIREWORKS_MODEL) in the environment to enable the AI summary via Fireworks."

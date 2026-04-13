@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Facture {{ facture.pk }}{% endblock %}
+
+{% block content %}
+<h1>Facture #{{ facture.pk }}</h1>
+
+<div class="panel facture-theme-panel">
+    <h2 class="panel__title">PDF — thème couleur</h2>
+    <p class="mk-p mk-p--small" style="margin-top:0">Couleur du PDF — enregistrer puis télécharger.</p>
+    <form id="facture-detail-theme" method="post" action="{% url 'catalog:facture_maj_theme' pk=facture.pk %}" class="facture-detail-theme-form">
+        {% csrf_token %}
+        <div class="inv-preview-toolbar inv-preview-toolbar--detail">
+            <span class="inv-preview-toolbar__label">Style</span>
+            <label class="inv-preview-color-wrap" title="Couleur du bandeau et des accents">
+                <span class="visually-hidden">Couleur du thème</span>
+                <input type="color" name="couleur_theme" class="inv-preview-color" id="facture-detail-accent" value="{{ facture.couleur_theme }}" />
+            </label>
+            <div class="inv-preview-presets" role="group" aria-label="Thèmes prédéfinis">
+                <button type="button" class="inv-preview-preset" data-color="#1a73e8" style="--sw:#1a73e8" title="Bleu"></button>
+                <button type="button" class="inv-preview-preset" data-color="#0d9488" style="--sw:#0d9488" title="Émeraude"></button>
+                <button type="button" class="inv-preview-preset" data-color="#7c3aed" style="--sw:#7c3aed" title="Violet"></button>
+                <button type="button" class="inv-preview-preset" data-color="#c2410c" style="--sw:#c2410c" title="Brique"></button>
+                <button type="button" class="inv-preview-preset" data-color="#334155" style="--sw:#334155" title="Ardoise"></button>
+            </div>
+        </div>
+        <p class="facture-theme-actions">
+            <button type="submit" class="btn btn-secondary btn--sm">Enregistrer le thème</button>
+            <a class="btn" href="{% url 'catalog:facture_pdf' pk=facture.pk %}">Télécharger le PDF</a>
+        </p>
+    </form>
+    <p class="facture-pdf-hint">Sans enregistrer&nbsp;: <code>?couleur=#RRGGBB</code> sur l’URL PDF.</p>
+</div>
+
+<div class="panel panel--meta">
+    <dl class="meta-grid">
+        <dt>Référence</dt>
+        <dd>{% if facture.reference %}{{ facture.reference }}{% else %}—{% endif %}</dd>
+        <dt>Statut</dt>
+        <dd><span class="badge">{{ facture.get_statut_display }}</span></dd>
+        <dt>Créée le</dt>
+        <dd>{{ facture.date_creation|date:"d/m/Y à H:i" }}</dd>
+        <dt>Modifiée le</dt>
+        <dd>{{ facture.date_modification|date:"d/m/Y à H:i" }}</dd>
+        <dt>Devise</dt>
+        <dd>{{ facture.devise }}</dd>
+    </dl>
+</div>
+
+<div class="panel panel--meta">
+    <h2 class="panel__title">Client</h2>
+    <dl class="meta-grid">
+        <dt>Raison sociale</dt>
+        <dd>{% if facture.client_nom %}{{ facture.client_nom }}{% else %}—{% endif %}</dd>
+        <dt>E-mail</dt>
+        <dd>{% if facture.client_email %}{{ facture.client_email }}{% else %}—{% endif %}</dd>
+        <dt>Téléphone</dt>
+        <dd>{% if facture.client_telephone %}{{ facture.client_telephone }}{% else %}—{% endif %}</dd>
+        <dt>Adresse</dt>
+        <dd>{% if facture.adresse_facturation %}<span class="pre-line">{{ facture.adresse_facturation }}</span>{% else %}—{% endif %}</dd>
+    </dl>
+</div>
+
+{% if facture.notes_internes %}
+<div class="panel panel--note">
+    <h2 class="panel__title">Notes internes</h2>
+    <p class="pre-line">{{ facture.notes_internes }}</p>
+</div>
+{% endif %}
+
+<p><a href="{% url 'catalog:facture_liste' %}">← Retour aux factures</a></p>
+
+<div class="table-scroll" role="region" aria-label="Lignes de facture">
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Libellé</th>
+            <th>PU HT</th>
+            <th>% TVA</th>
+            <th>Qté</th>
+            <th>Remise</th>
+            <th>Total HT</th>
+            <th>Montant TVA</th>
+            <th>Total TTC</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ligne in lignes %}
+        <tr>
+            <td>{{ ligne.libelle_facture }}</td>
+            <td>{{ ligne.produit.prix }} €</td>
+            <td>{{ ligne.produit.taux_tva }}&nbsp;%</td>
+            <td>{{ ligne.quantite }}</td>
+            <td>{% if ligne.remise_pourcent %}{{ ligne.remise_pourcent }}&nbsp;%{% else %}—{% endif %}</td>
+            <td>{{ ligne.montant_ht }} €</td>
+            <td>{{ ligne.montant_tva }} €</td>
+            <td>{{ ligne.montant_ttc }} €</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">Aucune ligne.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<dl class="recap">
+    <dt>Nombre de lignes</dt>
+    <dd>{{ nb_lignes }}</dd>
+    <dt>Total d’articles (somme des quantités)</dt>
+    <dd>{{ total_articles }}</dd>
+    <dt>Total HT</dt>
+    <dd>{{ total_ht }} €</dd>
+    <dt>Total TVA</dt>
+    <dd>{{ total_tva }} €</dd>
+    <dt>Total TTC</dt>
+    <dd class="total"><strong>{{ total_ttc }} €</strong></dd>
+</dl>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/facture_detail_theme.js' %}" defer></script>
+{% endblock %}
