@@ -14,7 +14,7 @@ ENSEMBLE = [
     {
         "title": "bloc 2",
         "lines": [
-            {"text": "Tester souvent evite beaucoup d erreurs", "show": True},
+            {"text": "Tester souvent évite beaucoup d erreurs", "show": True},
             {"text": "Cette phrase ne doit pas s afficher", "show": False}
         ]
     },
@@ -23,8 +23,8 @@ ENSEMBLE = [
         "lines": [
             {"text": "Cette phrase ne doit pas s afficher", "show": False},
             {"text": "Un bon code doit rester simple et clair", "show": True},
-            {"text": "La simplicite ameliore la qualite du code", "show": True},
-            {"text": "Refactoriser ameliore la compréhension", "show": True},
+            {"text": "La simplicité améliore la qualité du code", "show": True},
+            {"text": "Refactoriser améliore la compréhension", "show": True},
         ]
     }
 ]
